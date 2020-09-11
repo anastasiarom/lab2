@@ -1,1 +1,99 @@
+// Lab2.cpp : 9.Создать класс «Котик» со следующими данными: 
+//id – уникальный номер, name – ФИО, diagnosis – диагноз. 
+//Создать дружественный класс «Ветеринар», в котором реализовать метод установки диагноза котика.
 
+#include <iostream>
+using namespace std;
+
+class cat
+{
+private:
+	static int i;
+	int id;
+	string name;
+	string diagnosis;
+public:
+	cat(string nm, string dg)
+	{
+		id = i;
+		i++;
+		name = nm;
+		diagnosis = dg;
+	}
+	cat() 
+	{
+		id = i;
+		i++;
+		name = "Murzik";
+		diagnosis = "healthy";		
+	}
+	~cat()
+	{}
+	void input()
+	{
+		cout << "\nEnter your pet's name" << endl;
+		cin >>name;
+	}
+	friend void output(cat);
+	friend class vet;
+};
+int cat::i=1;
+class vet
+{
+public:
+	void diag(cat &a)
+	{
+		cout << "\nEnter "<<a.name<<"'s diagnosis" << endl;
+		cin >> a.diagnosis;
+	}
+};
+void output(cat a)
+{
+	cout << "\nId - " << a.id << "\nName - " << a.name << "\nDiagnosis - " << a.diagnosis << endl;
+}
+
+int main()
+{
+	cat c1("Max","broken paw"), c2,c3,c4;
+	int n;
+	bool fail=true;
+	cout << "\nInitialization constructor" << endl;
+	output(c1);
+	cout << "\nDefault constructor" << endl;
+	output(c2);
+	c3.input();
+	output(c3);
+	c4.input();
+	output(c4);
+	vet doctor;
+	doctor.diag(c3);
+	output(c3);
+	doctor.diag(c4);
+	output(c4);
+	do
+	{
+		cout << "\nEnter the number of cats in the shelter" << endl;
+		cin >> n;
+		if (cin.fail())
+			cout<< "\nError"<<endl;
+		else
+			fail = false;
+		cin.clear();
+		cin.ignore(cin.rdbuf()->in_avail());
+	} while (fail||n<=0);
+	cat* shelter = new(nothrow) cat[n];
+	if (!shelter)
+	{
+		cout << "\nUnable to allocate memory" << endl;
+		return 0;
+	}
+	for (int i = 0; i < n; i++)
+	{
+		shelter[i].input();
+		doctor.diag(shelter[i]);
+	}
+	for (int i = 0; i < n; i++)
+		output(shelter[i]);
+	delete [] shelter;
+  return 0;
+}
